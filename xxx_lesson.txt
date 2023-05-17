@@ -1,0 +1,66 @@
+-------------------   APPRENDRE NODE.JS --------------------------
+
+A - théorie sur l'écosystème de NodeJS
+
+
+B - Pratique
+
+    I - Premier pas sur nodeJS
+        - Il faut créer un dossier(nomProjet = Etude_NodeJS) qui a un fichier 
+        javaScript(app.js, main.js, index.js, server.js) qui est le point d'entrée 
+        de notre application. Il contiendra just:
+        console.log('Hello Node 😘')
+
+        - ensuite executer dans le terminal: (assurez-vous être dans le dossier /nomProjet)
+        node app.js
+
+
+    II - package.json
+        - il s'agit d'un fichier qu'on trouve généralement dans tous les projets javaScript.
+        - 02 rôles: 
+            => description de l'application (nom, version, licence, auteur,...)
+            => lister toutes les dépendances de l'application et leurs dépendances
+            bonus: scripter pour automatiser certains taches
+                ex : dans scripts, dans package.json on peut mettre:
+                "scripts" : {
+                    "nomScript": "node app.js"
+                },
+                on peut executer "node app.js" en "npm run nomScript"
+
+        - on peut créer un fichier package.json à la main ou avec la commande npm:
+            npm init
+            et répondre à plusieurs questions 
+
+    
+    III - ExpressJS
+        - c'est le framework le plus populaire pour créer un API Rest avec NodeJS
+        - pour l'installer: npm install express 
+        - Express se trouve dans le node_modules là où on est recommander de ne pas modifier qlq chose dedans 
+
+        - dans le fichier app.js, on peut changer en:
+            const express = require('express');         // aller chercher express dans le node_modules
+
+            const app = express();                      // créer un server web de l'api
+            const port = 3000;                          // le port ou on va démarrer notre api
+
+            app.get('/', (req, res) => res.send("Hello Express 😚 !!"));    // endpoint
+
+            app.listen(port,                                      // on démarre l'api sur le port 3000, et on affiche un message sur le terminal
+            () => console.log
+            (`notre application démarre sur : http://localhost:${port}`));
+
+        c'est le stricte minimum pour écrire in code express
+        - endpoint : c'est le coeur de l'express 
+            -> get : c'est la méthode de la request (get, post, put, delete,...) qui prend 02 params(route, fonction)
+            -> '/' : c'est la route de la request ('/home', '/search', '/createPersonne',...)
+            -> (req, res) => {} : c'est une fonction fléché qui prend 02 params 
+                req : request (récupère la requête du client)
+                res : response (objet qu'on va renvoyer au client)
+        - en faisant node app.js, et si on change quelque chose dans le code après, on ne va pas voir de changement dans l'execution
+        car on doit redémarrer le server (Ctrl+C ensuite node app.js) pour voir le changement
+
+
+    IV - Nodemon
+        - c'est un module de nodeJS qui a pour principe de redémarrer le server de l'api à chaque changement dans node code
+        - pour l'installer: npm install nodemon --save-dev
+        - pour l'executer: nodemon app.js
