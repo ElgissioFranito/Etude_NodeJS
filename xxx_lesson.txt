@@ -1,9 +1,15 @@
--------------------   APPRENDRE NODE.JS --------------------------
+------------------------------------------------------------------------------------
+------------------------------  APPRENDRE NODE.JS ----------------------------------
+------------------------------------------------------------------------------------
 
 A - théorie sur l'écosystème de NodeJS
 
 
 B - Pratique
+    Premier pas: 
+    - télécharger et installer nodeJS LTS
+    - télécharger et installer npm LTS (s'il n'est pas encore installer avec nodeJS)
+    - télécharger et installer un éditeur de texte (VScode,...)
 
     I - Premier pas sur nodeJS
         - Il faut créer un dossier(nomProjet = Etude_NodeJS) qui a un fichier 
@@ -12,7 +18,7 @@ B - Pratique
         console.log('Hello Node 😘')
 
         - ensuite executer dans le terminal: (assurez-vous être dans le dossier /nomProjet)
-        node app.js
+            $ node app.js
 
 
     II - package.json
@@ -25,17 +31,22 @@ B - Pratique
                 "scripts" : {
                     "nomScript": "node app.js"
                 },
-                on peut executer "node app.js" en "npm run nomScript"
+                on peut executer "node app.js" comme alias "npm run nomScript"
 
+        - créer un fichier package.json
         - on peut créer un fichier package.json à la main ou avec la commande npm:
-            npm init
-            et répondre à plusieurs questions 
+            $ npm init              // et répondre à plusieurs questions
 
     
     III - ExpressJS
+    C'est quoi?
         - c'est le framework le plus populaire pour créer un API Rest avec NodeJS
+    
+    Comment utiliser?
         - pour l'installer: npm install express 
-        - Express se trouve dans le node_modules là où on est recommander de ne pas modifier qlq chose dedans 
+        - Express se trouve dans le "node_modules" là où tous les librairies sont téléchargé, installé
+        et on est recommander de ne pas modifier qlq chose. (NB: tous les librairies installés dans le projet sont inscrit 
+        dans package.json dans l'objet "dependencies")
 
         - dans le fichier app.js, on peut changer en:
             const express = require('express');         // aller chercher express dans le node_modules
@@ -50,6 +61,7 @@ B - Pratique
             (`notre application démarre sur : http://localhost:${port}`));
 
         c'est le stricte minimum pour écrire in code express
+
         - endpoint : c'est le coeur de l'express 
             -> get : c'est la méthode de la request (get, post, put, delete,...) qui prend 02 params(route, fonction)
             -> '/' : c'est la route de la request ('/home', '/search', '/createPersonne',...)
@@ -63,4 +75,34 @@ B - Pratique
     IV - Nodemon
         - c'est un module de nodeJS qui a pour principe de redémarrer le server de l'api à chaque changement dans node code
         - pour l'installer: npm install nodemon --save-dev
-        - pour l'executer: nodemon app.js
+        - pour l'executer: nodemon app.js (on peut aussi just changer le script dans package.json en 
+                                            "nomScript": "nodemon app.js" )
+
+
+    V - Routes
+        - On utilise les routes pour créer des nouvels points de terminaison (endpoint = http://localhost/pokemon/1)
+        - une route = app.METHODEhttp("/ROUTE",FONCTIONgestionnaire(request,response))
+                    express() . [get,post,put,delete // toujours en miniscule] ("/accueil", (req,res) => res.send("haha")) 
+
+        exemples des routes avec express:
+        - app.get('/pokemon/1',(req,res) => res.send("Les informations du Pokemon n°1!")),
+        - app.get('/pokemons',(req,res) => res.send("Vous voulez récupérer tout les pokemons")),
+        - app.post('/pokemon',(req,res) => res.send("Vous venez d'\ajouter un nouveau Pokemon au pokédex")),
+        - app.put('/pokemon/1',(req,res) => res.send("Vous souhaitez modifier le Pokemon n°1")),
+        - app.delete('/pokemon/1',(req,res) => res.send("Le Pokemon n°1 vient d'\être supprimés")),
+        - app.delete('/pokemons',(req,res) => res.send("Oh, mince ! Vous venez de supprimer tous les Pokemon")),
+        
+
+    V - Passer un paramètre dans un endpoint
+        - C'est utile pour rendre dynamique une route et ne pas répéter un endpoint de tous les enregistrement (ex: pokemons)         
+        - pour le faire, il faut juste ajouter un ":" devant le nom du paramètre dans la route        
+            app.get('/pokemon/:id',(req,res) => {
+                const identifiant = req.params.id;
+                res.send(`vous avez demander le pokemon n°${identifiant}`);
+            });
+        - passer plusieurs paramètres dans un endpoint :      
+            app.get('/pokemon/:id/:name',(req,res) => {
+                const identifiant = req.params.id;
+                const name = req.params.name;
+                res.send(`vous avez demander le pokemon n°${identifiant} qui s'appele ${name}`);
+            });
