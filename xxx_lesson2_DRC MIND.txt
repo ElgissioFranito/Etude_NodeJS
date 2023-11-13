@@ -1,0 +1,334 @@
+    ------------------------------------------------------------------------------------
+----------------------------  APPRENDRE NODE.JS - DRC MIND ---------------------------------
+    ------------------------------------------------------------------------------------
+
+
+Partie I - Introduction
+
+    Cest quoi?
+    - NodeJS est un environement d'éxecution de code JavaScript à la partie serveur. Il permet de créer un service
+    web(API) qui communique avec le serveur (un serveur est un ordinateur puisant et distant contenant la base de données,
+    des fichiers(mp3,mp4,Html,...),...)
+    - Cette communication est faite avec le client(navigateur,application mobile,cli...) de l'API.
+
+    Pourquoi l'utiliser?
+    - utilise un language JavaScript,tu n'as plus besoin d'apprendre un nouveau language pour ta partie serveur si tu
+    utilise déjà dans la partie client
+    - très rapide, légère et évolutif
+    - propose une base de code propre et cohérent
+    - possède un très grande communauté
+    - possède un très grand nombre des bibliothèques openSource(gratuit) => avec npm
+
+    Comment fonctionne nodeJS?
+    Il est impossible d'utiliser le language JS en dehors de navigateur, car dans chaque navigateur il y a un moteur spécifique
+    qui compiler le code JS en code binaire(compréhensible par les ordinateur).
+    NodeJS intègre le moteur V8 de navigateur chrome. C'est grâce à lui qu'il peut executer directement un code JS sur la machine et
+    peut effectuer des opérations tels que:
+        * gerer les fichiers dans l'ordinateur
+        * manipuler la base de données
+        * contrôler et gérer les réssources des ordinateurs
+
+    Comment fonctionne nodeJS en arrière plan?
+    JavaScript est donc un language capable de créer une application web, desktop, mobile, serveur(API).
+    Dans une application serveur, voici comment nodeJS fonctionne:
+    - une application est une ensempble d'instruction qui s'éxecute pour accomplir un certain tâche. Ces instructions s'éxecute l'une
+    après l'autre dans un THREAD(fil d'éxecution)
+    - NodeJS ne possède q'une seul THREAD (pas comme JAVA qui a des multiple THREAD pour rendre plus rapide la vitesse d'éxecution(asynchrone/parallèle))
+    - Etant données que les instructions s'éxecute l'un après l'autre, NodeJS reste le plateforme le plus evolutif, rapide, et légère.
+    Parce que même s'il utilise qu'un seul THREAD, il peut éxecuter les instructions de façon asynchrone/parallèle. Cela se fait grâce à
+    libuv qui est un librairie qui implémente la boucle évènementielle(Event loop). C'est à dire, nodeJS attribue des opérations aux
+    système d'éxploitation à chaque fois que possible tandis que cels-ci possèdent des multiples THREAD.
+
+
+
+Partie II - Les bases de NodeJS
+
+    1 - Créer un fichier javascript dans un dossier
+        ex: desktop/projetNodeJS/index.js
+
+
+    2 - NodeJS utilise la language JS
+        ex: let nom = "Elgissio Franito";
+            function direBonjour(param){
+                console.log("Bonjour " + param);
+            }
+            direBonjour(nom);
+
+        - executer dans le terminal (il faut installer nodeJS): node index
+        Bonjour Elgissio Franito
+
+        Tous les conceptes de JS sont valable dans nodeJS, avec des surplus.
+
+
+    3 - Les objets globaux
+    Ce sont les objets ou fonctions qui sont disponibles immédiatement dans node js, sans importer des modules particuliers.
+    on peut directement voir ce qui sont dedans avec:
+        console.log(global);
+
+        cela affiche => global, setTimeout, setInterval, clearInterval, clearTimeout,...
+
+        a) setTimeout() :
+            - cette fonction sert a éxecuter une ou plusieurs instructions après un certain temps(en milliséconde).
+            - il prend deux paramètre:
+                * le premier est une foction fléché qui rassemble les instructions à faire
+                * la deuxième est le temps qu'il faut avant l'éxecution (en milliséconde)
+            ex:
+                setTimeout(()=>{
+                    console.log("haha");
+                },2000);                    // le console affichera "haha" après 2s
+
+        b) setInterval() :
+            - cette fonction sert a éxecuter une ou plusieurs instructions tous les lapses de temps (en milliséconde).
+            - il prend deux paramètre:
+                * le premier est une foction fléché qui rassemble les instructions à faire
+                * la deuxième est le temps de la boucle (en milliséconde)
+            ex:
+                var temps = setInterval(()=>{
+                    console.log("haha");
+                },1500);                    // le console affichera "haha" tous les 3s
+
+                setTimeout(()=>{
+                    clearInterval(temps);
+                    console.log("haha n'est plus");
+                },10000);                    // arrète la boucle setInterval et affiche "haha n'est plus"
+
+
+    4 - Les modules:
+        - Les modules en NodeJS sont des fonctionnalités qui se trouvent dans des fichiers apart qu'on peut utiliser et réutiliser
+        dans d'autres fichiers.
+
+        a) creation des modules
+            - soit un fichier : scolarite.js
+                const etudiants = [
+                    {
+                        nom: "Jean Gerard",
+                        niveau: 1
+                    },
+                    {
+                        nom: "Yvette Charles",
+                        niveau: 2
+                    },
+                ];
+
+                const cours = ["Francais", "Maths", "Physique"];
+
+                module.exports = cours;     // seul la variable cours est exporter hors du fichier
+
+            -  soit un fichier : test.js
+                const matiere = require("./scolarite");
+                console.log(matiere);       // affichera tous les modules exportés (variable, function,...) par le fichier scolarite.js (la variable cours)
+
+                on peut aussi:
+                const { cours } = require("./scolarite");
+                console.log(cours);       // affichera seulement la variable "cours" parmis tous les modules exportés par le fichier scolarite.js
+
+        b) les modules natives dans nodeJS (os, fs, http,...)
+            * OS : fornis les information du système d'exploitation
+
+            * FS : la gestion des fichiers
+
+            * HTTP : la gestion du serveur
+
+            -  soit un fichier : test.js
+                const systeme = require("os");
+                console.log(systeme);       // affichera tous les modules exportés par le module "os"
+                console.log(systeme.userInfo());       // affichera l'information de l'utilisateur connecté au système
+                console.log(systeme.version());       // affichera la version du système d'exploitation
+
+
+    5 - Création d'un serveur
+    NodeJS crée sa propre serveur (pas comme PHP qui utiliser le serveur apache).
+    La création de système se passe en 03 étapes:
+        - importation du module http
+        - création du serveur en appelant le createServer du module "http"
+        - écoute des réquetes en appelant le listen du module "http"
+
+        * server.js:
+
+        // importation du module http
+        const http = require("http");
+
+        // création du serveur
+        const server = http.createServer((request, response) => {
+            console.log("Serveur créé!");                                   // action à faire quand le serveur sera créer
+        })
+
+        // écoute des réquetes
+        server.listen(
+            3001,                                             // le port
+            "localhost",                                      // l'adresse IP, il prend "localhost" par defaut meme si on ne le mentionne pas ici
+            () => {
+            console.log("Serveur prêt à ecouter!");           // action à faire quand le serveur sera prêt à écouter
+        })
+
+        * Si, on lance le http://localhost:3001. On verra sûrement "serveur créé" dans le console et le navigateur qui retourne en boucle
+    car il n'y a pas de réponse retourner par le serveur.
+
+
+    6 - request et response (sur le createServer)
+    - La REQUETE est le demande qu'on fait vers le serveur par le protocole HTTP
+    si on fait:
+        const server = http.createServer((request, response) => {
+            console.log(request);
+        })
+
+    on va voir beaucoup de chose qui sont propre à l'objet requete tels que METHOD et URL.
+    NB : Ces deux fonction sont essentiel pour la suite de l'apprentissage
+        - request.method : recupère la methode employé du requete HTTP => get, post, put, delete, ...
+        - request.url : récupère l'url après le nm du domaine et le port => /, /accueil, /profil, ...
+
+    - ces deux function determine quel sera la response du serveur, s'il reçoit tel méthode et tel url du client
+    ex : server.js
+        const server = http.createServer((request, response) => {
+            if(request.url === "/accueil"){
+                console.log(" Bienvenu très cher developpeur! ");
+            } else if(request.url === "/profil"){
+                console.log(" Vous êtes un developpeur backend ");
+            } else {
+                console.log(" URL invalide ");
+            }
+        })
+
+    - l'utilisateur ne voit pas ce qui se passe dans la console, c'est pour qu'on lui envoie des REPONSE
+        * il a 03 partie:
+            - l'en-tête setHeader(): détermine quel type d'information le serveur envoie au client (text/plain, html, json, ...)
+            - le contenu
+            - la fermeture end() : envoyer la reponse
+
+    ex : server.js (text/plain)
+        const server = http.createServer((request, response) => {
+
+            // definition de l'entete (setHeader)
+            response.setHeader("content-type","text/plain");
+
+            // definition de contenu selon la demande du client
+            if(request.url === "/accueil"){
+                response.write(" Bienvenu très cher developpeur! ");
+            } else if(request.url === "/profil"){
+                response.write(" Vous êtes eun developpeur backend ");
+            } else {
+                response.write(" URL invalide ");
+            }
+
+            // fermeture de la reponse
+            response.end();
+        })
+
+
+    ex : server.js (text/html)
+        const server = http.createServer((request, response) => {
+
+            // definition de l'entete (setHeader)
+            response.setHeader("content-type","text/html");
+
+            // definition de contenu selon la demande du client
+            if(request.url === "/accueil"){
+                response.write(" <h1> Bienvenu très cher developpeur! </h1>");
+            } else if(request.url === "/profil"){
+                response.write(" <h1> Vous êtes un developpeur backend </h1>");
+            } else {
+                response.write(" <h1> URL invalide </h1>");
+            }
+
+            // fermeture de la reponse
+            response.end();
+        })
+
+    NB :  l'envoie des text brut ou html n'est pas recommandé dans un projet nodeJS, 
+    ce qu'il faut faire c'est mettre les response correspondant à chaque URL et METHOD 
+    dans un fichier 
+
+
+    7 - Gestion des fichiers (FS)
+    la gestion de fichier se fait toujours avec la module FS de l'objet global du nodeJS, donc il faut 
+    toujours l'importer:
+
+        const fs = require('fs');
+
+    fs.existsSync('/chemin') : fonction qui return "true" si le dossier/fichier du chemin existe
+    fs.mkdir('/chemin', callback(erreur)) : fonction asynchrone qui permet la création d'un dossier
+    fs.rmdir('/chemin', callback(erreur)) : fonction asynchrone qui permet la suppression d'un dossier
+    fs.writeFile('/chemin', "contenuFichier", callback(erreur)) : fonction asynchrone qui permet la 
+            création d'un fichier ou modification du contenu d'un fichier s'il existe déjà
+    fs.unlink('/chemin', callback(erreur)) : fonction asynchrone qui permet la suppression d'un fichier
+    fs.readFile('/chemin', callback(erreur,donnee)) : fonction asynchrone qui permet la lecture des donnee 
+            dans un fichier (avec param donnee = les données dans le fichier)
+
+
+        Donc, comme on a dit qu'il n'est pas recommander d'envoyer un reponse en text brute. Voici une meilleur 
+    pratique avec l'envoye des fichier HTML
+        * créer un plusieurs fichiers html correspondant à chaque reponse (ex : ./IHM/accueil.html, ./IHM/profil.html, ...)
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Accueil</title>
+            </head>
+            <body>
+                <h1>Accueil</h1>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Exercitationem ad laborum quam 
+                    perferendis? Repellendus itaque, doloribus quisquam dolorum atque nostrum quaerat ratione 
+                    adipisci reiciendis nisi perferendis quis porro aut maxime! Ad aperiam fugiat sed animi ea 
+                    dignissimos doloremque debitis accusamus molestiae voluptate quam autem fugit ducimus, molestias 
+                    deserunt eos aliquid!</p>
+            </body>
+            </html>
+
+        
+        * dans la creation de serveur (server.js)
+        const server = http.createServer((request, response) => {
+            // definition de l'entete de la reponse 
+            response.setHeader("content-type","text/html");
+
+            // definition de la contenue de la reponse selon la demande du client
+            let fichier = "";
+
+             if (request.url === "/accueil") {
+                 fichier = "./IHM/accueil.html";
+             } else if (request.url === "/profil") {
+                 fichier = "./IHM/profil.html";
+             } else {
+                 fichier = "./IHM/invalid.html";
+             }
+
+            fs.readFile(fichier,(erreur,data)=>{
+                if (erreur){
+                    console.log(erreur);
+                    response.end();
+                } else {
+                    response.write(data);
+                    response.end();
+                }
+            })
+
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
